@@ -3,8 +3,8 @@ title: "Module2 - RMarkdown Document 1"
 author: "Irene Espinosa-Martos, PhD."
 date: "7 de noviembre de 2018"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 ---
 
@@ -112,13 +112,86 @@ plot(pressure)
 
 ## Insert Tables
 
+### with **kable ()** function
+
 ```{r}
 knitr::kable(head(cars),
              caption ="Top 6 Rows of Cars Dataset")
+```
+
+```{r, results = 'asis'}
+knitr::kable(head(mtcars), digits =2, align = c(rep("l", 4), rep("c", 4), rep("r", 4)))
+```
+
+### with pandoc formats
+
+--------------------------------------------------------
+Centered  Default     Right  Left
+ Header   Aligned   Aligned  Aligned
+--------- -------- --------  -----------------------
+First     row      12.0      Example of a row that spans multiple lines.
+
+Second    row      5.0       Here's another one. Note the blank line between rows.
+---------------------------------------------------------
+
++---------+---------+---------+-------------+
+|Centered | Default |   Right | Left        |
+| Header  | Aligned | Aligned | Aligned     |
++:=======:+=========+========:+:====================+
+|First    | row     | 12.0    | Example of a row that spans multiple lines.|
++---------+---------+---------+-------------+
+|Second   | row     |  5.0    | Here's another one. Note the blank line between rows.|
++---------+---------+---------+-------------+
+
+### With `stargazer()` for summarizing regresion models and others (see `stargazer_models`, help page)
+
+```{r star, results = 'asis', warning=FALSE, message=FALSE}
+library(stargazer, quietly = TRUE)
+
+fit1 <- lm(mpg ~ wt, mtcars)
+fit2 <- lm(mpg ~ wt + hp, mtcars)
+fit3 <- lm(mpg ~ wt + hp + disp, mtcars)
+
+stargazer(fit1, fit2, fit3, type = 'html', 
+          column.labels = c("model 1","model 2","model 3"),
+          column.separate = c(1,1,1))
+```
+
+#### correlation matrix with `stargazer()` function
+
+```{r star1, results = 'asis', warning=FALSE, message=FALSE}
+library(stargazer, quietly = TRUE)
+#change type according output : latex, html
+correlation.matrix <- cor(attitude[,c("rating","complaints","privileges")])
+stargazer(correlation.matrix, title="Correlation Matrix", type = 'html')
 ```
 
 ## Insert an equation
 
 $$ Y = \beta_0 + \beta_1x $$
 
+## Insert images
+
+Here is an image inserted
+
+![](Logo enero2017.jpg)
+
+this only works in html formats
+![r logo](https://www.r-project.org/logo/Rlogo.svg)
+
+
+## Insert an Animated GIF and video (only works in html formats)
+
+```{r}
+#![sunstar](sunstar/sunstar.gif)
+```
+
+## Insert text with some footnotes
+
+Here is footnote reference [^1] and another [^longnote]
+
+Here is an inline footnote ^[Inline notes are easier to write, since you don´t have to pick an identifier and move down to type the note.]
+
+[^1]: Here is a footnote.
+[^longnote]: Here's one with multiple blocks.
 
